@@ -1,0 +1,21 @@
+﻿-- Define Measure
+DEFINE
+    MEASURE 'Fact Sale'[Profit Per Quantity] =
+        IF (
+            SUM ( 'Fact Sale'[Quantity] ) = 0,
+            BLANK(),
+            SUM ( 'Fact Sale'[Profit] ) / SUM ( 'Fact Sale'[Quantity] )
+        )
+    MEASURE 'Fact Sale'[Profit Per Quantity 2] =
+        CALCULATE (
+            SUM ( 'Fact Sale'[Profit] ) / SUM ( 'Fact Sale'[Quantity] ),
+            'Fact Sale'[Quantity] <> 0
+        )
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Dimension Stock Item'[Stock Item],
+    "Profit Per Quantity", FORMAT ( [Profit Per Quantity], "Percent" )
+)
+ORDER BY
+    [Profit Per Quantity] DESC,
+    'Dimension Stock Item'[Stock Item]
